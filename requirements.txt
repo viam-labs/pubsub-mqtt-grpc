@@ -1,0 +1,2 @@
+viam-sdk
+pubsub_api @ git+https://github.com/viam-labs/pubsub-api.git@main
