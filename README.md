@@ -3,6 +3,7 @@
 This module implements the [viam-labs pubsub API](https://github.com/viam-labs/pubsub-api) in a viam-labs:service:mqtt-grpc model.
 With this service, you can interact with [MQTT](https://mqtt.org/) brokers to publish and subscribe to topics in your Viam projects.
 
+
 ## Requirements
 
 Typically, you would need to have an MQTT broker like [Mosquitto](https://www.mosquitto.org/) or [EMQ X](https://www.emqx.io/) running somewhere that is reachable by this module over the network.
@@ -46,8 +47,10 @@ The following attributes are available for `viam-labs:pubsub:viam-labs:service:m
 | ---- | ---- | --------- | ----------- |
 | `broker` | string | **Required** |  Address of MQTT broker, required unless local_mosquitto is set to true |
 | `port` | int | Optional |  MQTT broker port, defaults to 1883 |
-| `username` | string | Optional |  URI to MQTT broker, required unless local_mosquitto is set to true |
-| `password` | string | Optional |  URI to MQTT broker, required unless local_mosquitto is set to true |
+| `mqtt_version` | int | Optional |  MQTT protocol version, defaults to 3 |
+| `mqtt_transport` | string | Optional |  MQTT transport (tcp or websockets), defaults to tcp |
+| `username` | string | Optional |  mqtt broker username |
+| `password` | string | Optional |  mqtt broker password |
 | `local_mosquitto` | boolean | Optional | Defaults to false, if true will attempt to install and use a local mosquitto instance |
 
 ### Example Configurations
@@ -63,6 +66,10 @@ A typical configuration might look like:
 }
 ```
 
-### Usage
+## Usage
 
 To interact with the your configured service with Viam SDKs, see the [viam-labs pubsub API](https://github.com/viam-labs/pubsub-api) documentation.
+
+## TODO
+
+- TLS is not currently supported.
