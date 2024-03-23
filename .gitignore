@@ -1,1 +1,6 @@
 .venv
+viam-env/
+.installed
+src/__pycache__
+src/pubsub/__pycache__
+test.py

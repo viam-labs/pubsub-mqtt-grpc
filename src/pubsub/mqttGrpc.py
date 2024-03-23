@@ -49,27 +49,27 @@ class mqttGrpc(Pubsub, Reconfigurable):
         mqtt_transport = config.attributes.fields["mqtt_transport"].string_value or 'tcp'
         username = config.attributes.fields["username"].string_value
         password = config.attributes.fields["password"].string_value
-        local_mosqitto = config.attributes.fields["local_mosqitto"].bool_value
+        local_mosquitto = config.attributes.fields["local_mosquitto"].bool_value
 
-        if local_mosqitto == True:
+        if local_mosquitto == True:
+            broker = 'localhost'
             mosquitto_running = False
             for process in psutil.process_iter(['name']):
                 if process.info['name'] == 'mosquitto':
+                    LOGGER.info(process.info)
                     mosquitto_running = True
 
             if not mosquitto_running:
                 if platform == "linux" or platform == "linux2":
                     LOGGER.info("Will attempt to install mosquitto with apt")
-                    result = subprocess.run(["apt install mosquitto"], capture_output=True, text=True)
+                    result = subprocess.run(["apt", "install", "mosquitto"], capture_output=True, text=True)
                     LOGGER.info(result.stdout)
                 elif platform == "darwin":
                     LOGGER.info("Will attempt to install mosquitto with brew")
-                    result = subprocess.run(["brew install mosquitto"], capture_output=True, text=True)
+                    result = subprocess.run(["brew", "install", "mosquitto"], capture_output=True, text=True)
+                    LOGGER.info(result)
+                    result = subprocess.run(["brew", "services", "start", "mosquitto"], capture_output=True, text=True)
                     LOGGER.info(result.stdout)
-                    result = subprocess.run(["brew services start mosquitto"], capture_output=True, text=True)
-                    LOGGER.info(result.stdout)
-                broker = '127.0.0.1'
-
         
         def on_connect(client, userdata, flags, rc):
             if rc == 0:
@@ -77,13 +77,19 @@ class mqttGrpc(Pubsub, Reconfigurable):
             else:
                 LOGGER.error("Failed to connect, return code %d\n", rc)
 
+        #if self.client and self.client.is_connected:
+        #    self.client.loop_stop()
+        #    self.client.disconnect()
+
         self.client_id = f'viam{os.getpid()}'
         self.client = mqtt_client.Client(client_id=self.client_id, protocol=mqtt_version, transport=mqtt_transport)
+        LOGGER.info("mqtt client instantiated, will connect to mqtt broker " + broker)
         if username != "":
             self.client.username_pw_set(username, password)
         self.client.on_connect = on_connect
         self.client.connect(broker, port)
-
+        LOGGER.info("mqtt connect complete")
+        self.client.loop_start()
         return
 
     async def publish(self, topic: str, message: str, qos: int=0) -> str:
@@ -99,7 +105,7 @@ class mqttGrpc(Pubsub, Reconfigurable):
     async def subscribe(self, topic: str) -> str:
         LOGGER.info("will subscribe to topic " + topic)
         def on_message(client, userdata, msg):
-            print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+            yield msg
 
         self.client.subscribe(topic)
-        self.client.on_message = on_message
+        self.client.message_callback_add(topic, on_message)
