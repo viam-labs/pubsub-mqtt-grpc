@@ -22,10 +22,8 @@ LOGGER = getLogger(__name__)
 
 class mqttGrpc(Pubsub, Reconfigurable):
     
-
     MODEL: ClassVar[Model] = Model(ModelFamily("viam-labs", "service"), "mqtt-grpc")
-    
-    client: mqtt_client.Client
+    client= None
     client_id: str
 
     @classmethod
@@ -56,7 +54,6 @@ class mqttGrpc(Pubsub, Reconfigurable):
             mosquitto_running = False
             for process in psutil.process_iter(['name']):
                 if process.info['name'] == 'mosquitto':
-                    LOGGER.info(process.info)
                     mosquitto_running = True
 
             if not mosquitto_running:
@@ -77,9 +74,9 @@ class mqttGrpc(Pubsub, Reconfigurable):
             else:
                 LOGGER.error("Failed to connect, return code %d\n", rc)
 
-        #if self.client and self.client.is_connected:
-        #    self.client.loop_stop()
-        #    self.client.disconnect()
+        if self.client is not None and self.client.is_connected() == True:
+            self.client.loop_stop()
+            self.client.disconnect()
 
         self.client_id = f'viam{os.getpid()}'
         self.client = mqtt_client.Client(client_id=self.client_id, protocol=mqtt_version, transport=mqtt_transport)
@@ -109,3 +106,4 @@ class mqttGrpc(Pubsub, Reconfigurable):
 
         self.client.subscribe(topic)
         self.client.message_callback_add(topic, on_message)
+        return "OK"
