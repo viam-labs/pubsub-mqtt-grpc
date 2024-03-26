@@ -101,14 +101,9 @@ class mqttGrpc(Pubsub, Reconfigurable):
     
     async def subscribe(self, topic: str) -> str:
         LOGGER.info("will subscribe to topic " + topic)
-        #def on_message(client, userdata, msg):
-        #    yield msg
+        def on_message(client, userdata, msg):
+            yield msg
 
-        #self.client.subscribe(topic)
-        #self.client.message_callback_add(topic, on_message)
-        #return "OK"
-        yield "ok"
-        yield "ok1"
-        yield "ok2"
-        yield "ok3"
-        
+        self.client.subscribe(topic)
+        self.client.message_callback_add(topic, on_message)
+        return "OK"
