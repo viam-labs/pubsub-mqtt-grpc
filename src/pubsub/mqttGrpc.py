@@ -11,6 +11,7 @@ from pubsub_python import Pubsub
 from viam.logging import getLogger
 
 from paho.mqtt import client as mqtt_client
+from queue import Queue
 
 import os
 import asyncio
@@ -99,11 +100,15 @@ class mqttGrpc(Pubsub, Reconfigurable):
         self.client.unsubscribe(topic)
         return "OK"
     
-    async def subscribe(self, topic: str) -> str:
+    async def subscribe(self, topic: str):
         LOGGER.info("will subscribe to topic " + topic)
+        q = Queue() 
         def on_message(client, userdata, msg):
-            yield msg
+            q.put(msg.payload.decode("utf-8"))
 
         self.client.subscribe(topic)
         self.client.message_callback_add(topic, on_message)
-        return "OK"
+
+        while True:
+            item = q.get(True)
+            yield(item)
