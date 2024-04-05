@@ -110,5 +110,8 @@ class mqttGrpc(Pubsub, Reconfigurable):
         self.client.message_callback_add(topic, on_message)
 
         while True:
-            item = q.get(True)
-            yield(item)
+            try:
+                item = q.get(False)
+                yield(item)
+            except:
+                await asyncio.sleep(.001)
