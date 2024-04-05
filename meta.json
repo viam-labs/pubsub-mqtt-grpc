@@ -1,0 +1,13 @@
+{
+  "module_id": "viam-labs:mqtt-grpc",
+  "visibility": "public",
+  "url": "https://github.com/viam-labs/pubsub-mqtt-grpc",
+  "description": "This module implements the viam-labs pubsub API in a viam-labs:service:mqtt-grpc model. With this service, you can interact with MQTT brokers to publish and subscribe to topics in your Viam projects.",
+  "models": [
+    {
+      "api": "viam-labs:service:pubsub",
+      "model": "viam-labs:service:mqtt-grpc"
+    }
+  ],
+  "entrypoint": "run.sh"
+}

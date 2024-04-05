@@ -3,8 +3,6 @@
 This module implements the [viam-labs pubsub API](https://github.com/viam-labs/pubsub-api) in a viam-labs:service:mqtt-grpc model.
 With this service, you can interact with [MQTT](https://mqtt.org/) brokers to publish and subscribe to topics in your Viam projects.
 
-NOTE: This is a work in progress.  At this time, subscribing is not working.
-
 ## Requirements
 
 Typically, you would need to have an MQTT broker like [Mosquitto](https://www.mosquitto.org/) or [EMQ X](https://www.emqx.io/) running somewhere that is reachable by this module over the network.

@@ -4,3 +4,4 @@ viam-env/
 src/__pycache__
 src/pubsub/__pycache__
 test.py
+module.tar.gz
