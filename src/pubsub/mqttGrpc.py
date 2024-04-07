@@ -60,7 +60,7 @@ class mqttGrpc(Pubsub, Reconfigurable):
             if not mosquitto_running:
                 if platform == "linux" or platform == "linux2":
                     LOGGER.info("Will attempt to install mosquitto with apt")
-                    result = subprocess.run(["apt", "install", "mosquitto"], capture_output=True, text=True)
+                    result = subprocess.run(["apt", "-y","install", "mosquitto"], capture_output=True, text=True)
                     LOGGER.info(result.stdout)
                 elif platform == "darwin":
                     LOGGER.info("Will attempt to install mosquitto with brew")
