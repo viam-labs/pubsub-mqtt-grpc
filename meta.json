@@ -9,5 +9,15 @@
       "model": "viam-labs:service:mqtt-grpc"
     }
   ],
-  "entrypoint": "run.sh"
+  "build": {
+    "build": "./build.sh",
+    "setup": "./setup.sh",
+    "path": "dist/archive.tar.gz",
+    "arch": [
+      "linux/arm64",
+      "linux/amd64",
+      "darwin/arm64"
+    ]
+  },
+  "entrypoint": "dist/__main__"
 }

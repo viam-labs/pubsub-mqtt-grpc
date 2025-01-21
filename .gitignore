@@ -5,3 +5,6 @@ src/__pycache__
 src/pubsub/__pycache__
 test.py
 module.tar.gz
+build/
+dist/
+__main__.spec
