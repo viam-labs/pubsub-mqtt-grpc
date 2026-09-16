@@ -1,4 +1,4 @@
-viam-sdk==0.79.1
+viam-sdk==0.80.0
 pubsub_api @ git+https://github.com/viam-labs/pubsub-api.git@v0.1
 paho-mqtt==1.6.1
 psutil
