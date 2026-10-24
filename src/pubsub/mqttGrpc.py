@@ -39,7 +39,7 @@ class mqttGrpc(Pubsub, Reconfigurable):
     def validate(cls, config: ComponentConfig):
         broker = config.attributes.fields["broker"].string_value
         local_mosquitto = config.attributes.fields["local_mosquitto"].bool_value
-        if broker == "" and local_mosquitto == False:
+        if broker == "" and not local_mosquitto:
             raise Exception(
                 "Either broker must be defined or local_mosquitto set to true"
             )
@@ -58,7 +58,7 @@ class mqttGrpc(Pubsub, Reconfigurable):
         password = config.attributes.fields["password"].string_value
         local_mosquitto = config.attributes.fields["local_mosquitto"].bool_value
 
-        if local_mosquitto == True:
+        if local_mosquitto:
             broker = "localhost"
             mosquitto_running = False
             for process in psutil.process_iter(["name"]):
@@ -93,7 +93,7 @@ class mqttGrpc(Pubsub, Reconfigurable):
             else:
                 LOGGER.error("Failed to connect, return code %d\n", rc)
 
-        if self.client is not None and self.client.is_connected() == True:
+        if self.client is not None and self.client.is_connected():
             self.client.loop_stop()
             self.client.disconnect()
 
@@ -134,5 +134,5 @@ class mqttGrpc(Pubsub, Reconfigurable):
             try:
                 item = q.get(False)
                 yield (item)
-            except:
+            except Exception:
                 await asyncio.sleep(0.001)
