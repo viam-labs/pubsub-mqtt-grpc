@@ -1,34 +1,23 @@
+import asyncio
+import os
+import subprocess
+from queue import Queue
+from sys import platform
 from typing import (
     ClassVar,
     Mapping,
-    Sequence,
-    Any,
-    Dict,
-    Optional,
-    Tuple,
-    Final,
-    List,
-    cast,
 )
-from typing_extensions import Self
 
+import psutil
+from paho.mqtt import client as mqtt_client
+from pubsub_python import Pubsub
+from typing_extensions import Self
+from viam.logging import getLogger
 from viam.module.types import Reconfigurable
 from viam.proto.app.robot import ComponentConfig
-from viam.proto.common import ResourceName, Vector3
+from viam.proto.common import ResourceName
 from viam.resource.base import ResourceBase
 from viam.resource.types import Model, ModelFamily
-
-from pubsub_python import Pubsub
-from viam.logging import getLogger
-
-from paho.mqtt import client as mqtt_client
-from queue import Queue
-
-import os
-import asyncio
-import subprocess
-import psutil
-from sys import platform
 
 LOGGER = getLogger(__name__)
 

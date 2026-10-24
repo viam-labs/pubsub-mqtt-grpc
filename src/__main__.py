@@ -1,7 +1,8 @@
 import asyncio
 
-from viam.module.module import Module
 from pubsub_python import Pubsub
+from viam.module.module import Module
+
 from pubsub import mqttGrpc
 
 
