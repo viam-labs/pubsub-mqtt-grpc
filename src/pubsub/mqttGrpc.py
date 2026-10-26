@@ -28,9 +28,7 @@ class mqttGrpc(Pubsub, Reconfigurable):
     client_id: str
 
     @classmethod
-    def new(
-        cls, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
-    ) -> Self:
+    def new(cls, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]) -> Self:
         my_class = cls(config.name)
         my_class.reconfigure(config, dependencies)
         return my_class
@@ -40,20 +38,14 @@ class mqttGrpc(Pubsub, Reconfigurable):
         broker = config.attributes.fields["broker"].string_value
         local_mosquitto = config.attributes.fields["local_mosquitto"].bool_value
         if broker == "" and not local_mosquitto:
-            raise Exception(
-                "Either broker must be defined or local_mosquitto set to true"
-            )
+            raise Exception("Either broker must be defined or local_mosquitto set to true")
         return
 
-    def reconfigure(
-        self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
-    ):
+    def reconfigure(self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]):
         broker = config.attributes.fields["broker"].string_value
         port = int(config.attributes.fields["port"].number_value) or 1883
         mqtt_version = int(config.attributes.fields["mqtt_version"].number_value) or 3
-        mqtt_transport = (
-            config.attributes.fields["mqtt_transport"].string_value or "tcp"
-        )
+        mqtt_transport = config.attributes.fields["mqtt_transport"].string_value or "tcp"
         username = config.attributes.fields["username"].string_value
         password = config.attributes.fields["password"].string_value
         local_mosquitto = config.attributes.fields["local_mosquitto"].bool_value
@@ -76,9 +68,7 @@ class mqttGrpc(Pubsub, Reconfigurable):
                     LOGGER.info(result.stdout)
                 elif platform == "darwin":
                     LOGGER.info("Will attempt to install mosquitto with brew")
-                    result = subprocess.run(
-                        ["brew", "install", "mosquitto"], capture_output=True, text=True
-                    )
+                    result = subprocess.run(["brew", "install", "mosquitto"], capture_output=True, text=True)
                     LOGGER.info(result)
                     result = subprocess.run(
                         ["brew", "services", "start", "mosquitto"],
@@ -98,9 +88,7 @@ class mqttGrpc(Pubsub, Reconfigurable):
             self.client.disconnect()
 
         self.client_id = f"viam{os.getpid()}"
-        self.client = mqtt_client.Client(
-            client_id=self.client_id, protocol=mqtt_version, transport=mqtt_transport
-        )
+        self.client = mqtt_client.Client(client_id=self.client_id, protocol=mqtt_version, transport=mqtt_transport)
         LOGGER.info("mqtt client instantiated, will connect to mqtt broker " + broker)
         if username != "":
             self.client.username_pw_set(username, password)
